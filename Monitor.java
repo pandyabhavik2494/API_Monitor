@@ -2,14 +2,21 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 class APIAStatus extends Thread 
 { 
 	private String apiURL;
 	private String APIName;
+	private int st;
+	private int et;
+	private int ct;
 	private Socket s;
-	APIAStatus( String data, String name, Socket soc) {
+	APIAStatus( String data, String name, Socket soc,int startTime,int endTime,int crtTime) {
 		apiURL = data;
 		APIName = name;
+		st = startTime;
+		et = endTime;
+		ct = crtTime;
 		s = soc;
 	 }
 
@@ -22,13 +29,21 @@ class APIAStatus extends Thread
 			conn.setRequestProperty("Accept", "application/json");
 			DataOutputStream dout=new DataOutputStream(s.getOutputStream());
 			if(conn.getResponseCode() == 200){
-				dout.writeUTF(APIName + " is UP");
+				if(st > ct || ct > et){
+					dout.writeUTF(APIName + " is UP");
+				} else {
+					dout.writeUTF("No Notification Period On for : "+ APIName);
+				}
 				System.out.println ("Done " + time);
 				dout.flush();  
 				dout.close();
 			}
 			if (conn.getResponseCode() != 200) {
-				dout.writeUTF(APIName + " is DOWN");
+				if(st > ct || ct > et){
+					dout.writeUTF(APIName + " is Down");
+				} else {
+					dout.writeUTF("No Notification Period On for : "+ APIName);
+				}
 				System.out.println ("Done " + time);
 				dout.flush();  
 				dout.close();
@@ -107,13 +122,13 @@ class Monitor{
 	static long prevAPI_3 = 0;
 
 	public static void main(String[] args) throws IOException{
-		String apiURL;
-		String APIName;
-		long time;
+		String apiURL,APIName;
+		int crtTime,startTime,endTime;
 		String[] data;
 		ServerSocket ss=new ServerSocket(6666);  
 		while(true){
 			Socket s = null;
+			crtTime = Integer.parseInt(new SimpleDateFormat("kk:mm").format(new Date()).replace(":", ""));
 			try{
 				s=ss.accept();//establishes connection   
 				DataInputStream dis=new DataInputStream(s.getInputStream());
@@ -121,7 +136,9 @@ class Monitor{
 				data = str.split(" ");
 				apiURL = data[0];
 				APIName = data[1];
-				APIAStatus object1 = new APIAStatus(apiURL,APIName,s); 
+				startTime = Integer.parseInt(data[2]); 
+				endTime = Integer.parseInt(data[3]);
+				APIAStatus object1 = new APIAStatus(apiURL,APIName,s,startTime,endTime,crtTime); 
 				object1.start();   
 			} catch (Exception e){  
 				e.printStackTrace(); 
