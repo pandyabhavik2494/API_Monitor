@@ -1,6 +1,6 @@
 # API Monitor
 
-A simple Java based program which can montior the status of certain configurable third party APIs.
+A simple Java based program which can monitor the status of certain configurable third party APIs.
 
 It uses the concepts of Scheduler, Multithreading and Two way Client-Server communication via Socket programming in Java to provide the following functionalities:
 
