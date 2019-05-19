@@ -35,3 +35,7 @@ Demo Images : (Please do checkout the Demo Video in the Demo_Images & Video fold
 **Monitor :**
 
 ![Monitor](https://github.com/pandyabhavik2494/API_Monitor/blob/master/Demo_Images%20%26%20Video/Monitor.png)
+
+**In Action :**
+
+![In%20Action](https://github.com/pandyabhavik2494/API_Monitor/blob/master/Demo_Images%20%26%20Video/In%20Action.png)
